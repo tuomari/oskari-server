@@ -3,18 +3,17 @@ package fi.nls.oskari.csw.helper;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.commons.collections.map.LinkedMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CSWISORecordDataQualityParser {
 
     private static final Logger log = LogFactory.getLogger(CSWISORecordDataQualityParser.class);
+    private static final Map<String, String> dataQualities;
+
     private static XPathExpression pathToLocalizedValue = null;
 
     //Lineage statement
@@ -22,7 +21,6 @@ public class CSWISORecordDataQualityParser {
 
     //Data quality node information
     private final XPath xpath = XPathFactory.newInstance().newXPath();
-    private final Map<String, String> dataQualities = new LinkedMap();
     private XPathExpression XPATH_NAME_OF_MEASURE = null; //many
     private XPathExpression XPATH_MEASURE_IDENTIFICATION_CODE = null;
     private XPathExpression XPATH_MEASURE_IDENTIFICATION_AUTHORIZATION = null;
@@ -46,22 +44,25 @@ public class CSWISORecordDataQualityParser {
     private XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE = null;
     //Free text (character string)
     private XPathExpression XPATH_CHARACTER_STRING = null;
-
+    static {
+        Map<String, String> dq = new LinkedHashMap<>();
+        dq.put("absoluteExternalPositionalAccuracy", "./gmd:report/gmd:DQ_AbsoluteExternalPositionalAccuracy");
+        dq.put("completenessCommission", "./gmd:report/gmd:DQ_CompletenessCommission");
+        dq.put("completenessOmission", "./gmd:report/gmd:DQ_CompletenessOmission");
+        dq.put("conceptualConsistency", "./gmd:report/gmd:DQ_ConceptualConsistency");
+        dq.put("domainConsistency", "./gmd:report/gmd:DQ_DomainConsistency");
+        dq.put("formatConsistency", "./gmd:report/gmd:DQ_FormatConsistency");
+        dq.put("topologicalConsistency", "./gmd:report/gmd:DQ_TopologicalConsistency");
+        dq.put("griddedDataPositionalAccuracy", "./gmd:report/gmd:DQ_GriddedDataPositionalAccuracy");
+        dq.put("accuracyOfTimeMeasurement", "./gmd:report/gmd:DQ_AccuracyOfATimeMeasurement");
+        dq.put("temporalConsistency", "./gmd:report/gmd:DQ_TemporalConsistency");
+        dq.put("temporalValidity ", "./gmd:report/gmd:DQ_TemporalValidity ");
+        dq.put("thematicClassificationCorrectness", "./gmd:report/gmd:DQ_ThematicClassificationCorrectness");
+        dq.put("nonQuantitativeAttributeAccuracy", "./gmd:report/gmd:DQ_NonQuantitativeAttributeAccuracy");
+        dq.put("quantitativeAttributeAccuracy", "./gmd:report/gmd:DQ_QuantitativeAttributeAccuracy");
+        dataQualities = Collections.unmodifiableMap(dq);
+    }
     public CSWISORecordDataQualityParser() {
-        dataQualities.put("absoluteExternalPositionalAccuracy", "./gmd:report/gmd:DQ_AbsoluteExternalPositionalAccuracy");
-        dataQualities.put("completenessCommission", "./gmd:report/gmd:DQ_CompletenessCommission");
-        dataQualities.put("completenessOmission", "./gmd:report/gmd:DQ_CompletenessOmission");
-        dataQualities.put("conceptualConsistency", "./gmd:report/gmd:DQ_ConceptualConsistency");
-        dataQualities.put("domainConsistency", "./gmd:report/gmd:DQ_DomainConsistency");
-        dataQualities.put("formatConsistency", "./gmd:report/gmd:DQ_FormatConsistency");
-        dataQualities.put("topologicalConsistency", "./gmd:report/gmd:DQ_TopologicalConsistency");
-        dataQualities.put("griddedDataPositionalAccuracy", "./gmd:report/gmd:DQ_GriddedDataPositionalAccuracy");
-        dataQualities.put("accuracyOfTimeMeasurement", "./gmd:report/gmd:DQ_AccuracyOfATimeMeasurement");
-        dataQualities.put("temporalConsistency", "./gmd:report/gmd:DQ_TemporalConsistency");
-        dataQualities.put("temporalValidity ", "./gmd:report/gmd:DQ_TemporalValidity ");
-        dataQualities.put("thematicClassificationCorrectness", "./gmd:report/gmd:DQ_ThematicClassificationCorrectness");
-        dataQualities.put("nonQuantitativeAttributeAccuracy", "./gmd:report/gmd:DQ_NonQuantitativeAttributeAccuracy");
-        dataQualities.put("quantitativeAttributeAccuracy", "./gmd:report/gmd:DQ_QuantitativeAttributeAccuracy");
 
         try {
             xpath.setNamespaceContext(new CSWISORecordNamespaceContext());
