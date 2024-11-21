@@ -63,7 +63,7 @@ public interface UsersMapper {
             " VALUES (" +
             " #{firstname}," +
             " #{lastname}," +
-            " #{screenname}," +
+            " LOWER(#{screenname})," +
             " #{email}," +
             " #{uuid}," +
             " #{attributes}" +
@@ -74,7 +74,7 @@ public interface UsersMapper {
     @Update("UPDATE oskari_users SET " +
             " first_name = #{firstname}, " +
             " last_name = #{lastname}, " +
-            " user_name = #{screenname}, " +
+            " user_name = LOWER(#{screenname}), " +
             " email = #{email}, " +
             " attributes = #{attributes}, " +
             " last_login = #{lastLogin} " +
@@ -100,12 +100,12 @@ public interface UsersMapper {
     @ResultMap("UsersResult")
     @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes, created, last_login" +
             " FROM oskari_users" +
-            " WHERE user_name = #{username}")
+            " WHERE LOWER(user_name) = LOWER(#{username})")
     User findByUserName(String username);
 
     @ResultMap("UsersResult")
     @Select("SELECT id, user_name, first_name, last_name, email, uuid, attributes, created, last_login FROM oskari_users" +
-            " WHERE LOWER(email) = #{email}")
+            " WHERE LOWER(email) = LOWER(#{email})")
     User findByEmail(String email);
 
     @Delete("DELETE FROM oskari_users WHERE id = #{id}")

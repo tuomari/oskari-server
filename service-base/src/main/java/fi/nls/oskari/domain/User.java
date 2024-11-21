@@ -9,10 +9,7 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Internal model for a user.
@@ -196,7 +193,7 @@ public class User implements Serializable {
     }
 
     public void setScreenname(String screenname) {
-        this.screenname = screenname;
+        this.screenname = screenname == null ? null : screenname.toLowerCase(Locale.ROOT);
     }
 
     public String getEmail() {
